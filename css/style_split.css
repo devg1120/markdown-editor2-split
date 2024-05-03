@@ -178,6 +178,13 @@ footer {
 
 
 /*-----------------------------*/
+
+#savefile.diff {
+
+  background-color: #0080FF;
+
+}
+/*-----------------------------*/
 #container2 {
   flex-grow: 1;
   overflow: hidden;

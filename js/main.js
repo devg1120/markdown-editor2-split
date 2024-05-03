@@ -13,14 +13,17 @@ document.addEventListener("DOMContentLoaded", () => {
  var fileHandle = null
 
 open_button.addEventListener("click", function(ev){
-      getFile();
+    console.log("openFile")
+      openFile();
 }, false);
 
 save_button.addEventListener("click", function(ev){
+    console.log("saveFile")
       saveFile();
 }, false);
 
 saveAs_button.addEventListener("click", function(ev){
+    console.log("saveAsFile")
       saveAsFile();
 }, false);
 
@@ -119,14 +122,15 @@ const pickerOpts = {
 };
 
 
-async function getFile() {
+async function openFile() {
   //const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
   [fileHandle] = await window.showOpenFilePicker(pickerOpts);
 
    filepath = await fileHandle.getFile();
 
    console.log(filepath.name);
-   filename_label.innerText = " [ " + filepath.name + " ] ";
+   //filename_label.innerText = " [ " + filepath.name + " ] ";
+   filename_label.textContent = " [ " + filepath.name + " ] ";
 
     var reader = new FileReader();
     console.dir(filepath);
@@ -154,9 +158,15 @@ const saveFileOptions = {
 };
 
 async function saveAsFile() {
-
+    console.log("saveAsFile")
     let value = editor.getValue();
   const newHandle = await window.showSaveFilePicker(saveFileOptions);
+
+   filepath = await newHandle.getFile();
+
+   console.log(filepath.name);
+   filename_label.innerText = " [ " + filepath.name + " ] ";
+   fileHandle = newHandle;
 
   const writableStream = await newHandle.createWritable();
 
@@ -168,6 +178,8 @@ async function saveAsFile() {
 
 async function saveFile() {
 
+    //console.log("saveFile")
+    alert("saveFile")
   if (filepath == null) {
        alert("filepath null!!!");
 	  return;
@@ -181,6 +193,7 @@ async function saveFile() {
   await writableStream.write(value);
 
   await writableStream.close();
+  filename_label.textContent = " [ *" + filepath.name + "* ] ";
 
 }
 

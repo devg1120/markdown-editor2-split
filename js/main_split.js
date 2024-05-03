@@ -11,9 +11,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
  var filepath = null;
  var fileHandle = null
+ var localFileSaveContent = "";
 
 open_button.addEventListener("click", function(ev){
-      getFile();
+      openFile();
 }, false);
 
 save_button.addEventListener("click", function(ev){
@@ -156,7 +157,7 @@ const pickerOpts = {
 };
 
 
-async function getFile() {
+async function openFile() {
   //const [fileHandle] = await window.showOpenFilePicker(pickerOpts);
   [fileHandle] = await window.showOpenFilePicker(pickerOpts);
 
@@ -176,6 +177,8 @@ async function getFile() {
         document.querySelectorAll('.column').forEach((element) => {
             element.scrollTo({top: 0});
         });
+        localFileSaveContent = input;
+        diff_ck_localFileSaveContent(input);
     }
 }
 
@@ -197,10 +200,20 @@ async function saveAsFile() {
   const newHandle = await window.showSaveFilePicker(saveFileOptions);
 
   const writableStream = await newHandle.createWritable();
-
+  
   await writableStream.write(value);
 
   await writableStream.close();
+
+  localFileSaveContent = value;
+  diff_ck_localFileSaveContent(value);
+   /********************************************/
+   filepath = await newHandle.getFile();
+
+   console.log(filepath.name);
+   filename_label.innerText = " [ " + filepath.name + " ] ";
+   fileHandle = newHandle;
+
 
 }
 
@@ -219,6 +232,8 @@ async function saveFile() {
   await writableStream.write(value);
 
   await writableStream.close();
+  localFileSaveContent = value;
+  diff_ck_localFileSaveContent(value);
 
 }
 
@@ -332,6 +347,7 @@ This web site is using ${"`"}markedjs/marked${"`"}.
             }
             let value = editor.getValue();
             convert(preview_id, value);
+            diff_ck_localFileSaveContent(value);
             saveLastContent(value);
         });
 
@@ -494,6 +510,24 @@ This web site is using ${"`"}markedjs/marked${"`"}.
         });
     };
 
+    // ----- local file save check -----
+    let diff_ck_localFileSaveContent = (content) => {
+	 if (localFileSaveContent != content ) {
+              if (save_button.classList.contains("diff")) {
+
+	      } else {
+                 save_button.classList.add("diff") ;
+	      }
+
+	 } else {
+              if (save_button.classList.contains("diff")) {
+                 save_button.classList.remove("diff") ;
+
+	      } else {
+	      }
+
+	 }
+    };
     // ----- local state -----
 
     let loadLastContent = () => {
